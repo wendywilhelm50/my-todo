@@ -1,0 +1,3 @@
+docker run --network todo-net --name todo-postgres -p 5432:5432 -e POSTGRES_USER=todo -e POSTGRES_PASSWORD=todo1234 -e POSTGRES_DB=todo -d postgres:11.2
+docker run --network todo-net --name todo-redis -d -p 6379:6379 redis:5.0.3
+docker run --network todo-net --name todo-elastic -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:6.6.1

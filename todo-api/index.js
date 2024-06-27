@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const redis = require('redis');
 var elasticsearch = require('elasticsearch');
-const envProps = require('./local_env_props');
+const envProps = require('./env_props');
 
 // Initializing the Express Framework /////////////////////////////////////////////////////
 const app = express();
@@ -27,7 +27,7 @@ postgresClient.on('connect', () => console.log('Postgres client connected'));
 postgresClient.on('error', (err) => console.log('Something went wrong with Postgres: ' + err));
 
 postgresClient
-    .query('CREATE TABLE IF NOT EXISTS todo (id SERIAL PRIMARY KEY, title TEXT UNIQUE NOT NULL)')
+    .query('CREATE TABLE IF NOT EXISTS todo (id SERIAL PRIMARY KEY, title TEXT UNIQUE NOT NULL);')
     .catch(err => console.log(err));
 
 // Redis Client Setup /////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ app.route('/api/v1/todos').get( async (req, res) => {
         var todos = []; // [{"title":"Get kids from school"},{"title":"Take out the trash"},{"title":"Go shopping"}]
         if (cachedTodoSet == null) {
             // Nothing in cache, get from database
-            await postgresClient.query('SELECT title FROM todo', (error, todoRows) => {
+            await postgresClient.query('SELECT title FROM todo;', (error, todoRows) => {
                 if(error) {
                     throw error;
                 }
@@ -109,7 +109,7 @@ app.route('/api/v1/todos').post( async (req, res) => {
     console.log('CALLED POST api/v1/todos with title=' + todoTitle);
 
     // Insert todo in postgres DB
-    await postgresClient.query('INSERT INTO todo(title) VALUES($1)', [todoTitle], (error, reply) => {
+    await postgresClient.query('INSERT INTO todo(title) VALUES($1);', [todoTitle], (error, reply) => {
         if (error) {
             throw error;
         }
